@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { login as apiLogin, logout as apiLogout, getStoredSession } from '@/core/api/auth';
+import { notifyError, notifySuccess } from '@/shared/utils/notify';
 import type { User } from '@/core/types';
 
 // Store de autenticacion: maneja sesion, login y logout
@@ -29,8 +30,11 @@ export const useAuthStore = defineStore('auth', () => {
       const res = await apiLogin(creds.email, creds.password);
       user.value = res.user;
       token.value = res.token;
+      notifySuccess('Sesion iniciada correctamente');
     } catch (e: unknown) {
-      error.value = e instanceof Error ? e.message : 'Error desconocido';
+      const msg = e instanceof Error ? e.message : 'Error desconocido';
+      error.value = msg;
+      notifyError(msg);
     } finally {
       isLoading.value = false;
     }
@@ -42,6 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null;
     token.value = null;
     error.value = null;
+    notifySuccess('Sesion cerrada');
   }
 
   return { user, token, isLoading, error, isAuthenticated, restoreSession, login, logout };

@@ -1,10 +1,10 @@
 <template>
-  <!-- Pagina 404 - Ruta no encontrada -->
+  <!-- Página 404 - Ruta no encontrada -->
   <div class="fullscreen bg-primary text-white text-center q-pa-md flex flex-center">
     <div>
       <div style="font-size: 30vh">404</div>
 
-      <div class="text-h2" style="opacity: 0.4">Pagina no encontrada</div>
+      <div class="text-h2" style="opacity: 0.4">Página no encontrada</div>
 
       <q-btn
         class="q-mt-xl"

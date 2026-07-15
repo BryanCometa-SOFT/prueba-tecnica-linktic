@@ -1,24 +1,108 @@
-# Quasar App (prueba-tecnica)
+# Prueba Técnica - Gestión de Pagos
 
-## Install the dependencies
+Aplicación frontend desarrollada con Vue 3, Quasar Framework 2 y Pinia.
+
+## Requisitos
+
+- Node.js >= 22.12
+- pnpm (recomendado) o npm
+
+## Instalación
 
 ```bash
 pnpm install
-# or: yarn/npm/bun install
 ```
 
-### Start the app in development mode (HMR, error reporting, etc.)
+## Ejecutar en desarrollo
 
 ```bash
 quasar dev
 ```
 
-### Build the app for production
+La aplicación se abrirá en `http://localhost:9000`.
 
-```bash
-quasar build
+## Credenciales de prueba
+
+| Campo      | Valor             |
+| ---------- | ----------------- |
+| Correo     | admin@linktic.com |
+| Contraseña | admin123          |
+
+## Estructura del proyecto
+
+```
+src/
+├── core/                    # Infraestructura global
+│   ├── api/                 # Servicios mock (auth, payments)
+│   ├── layouts/             # MainLayout con header y navegación
+│   ├── pages/               # ErrorNotFound, HomePage
+│   ├── plugins/             # Setup de Pinia
+│   ├── router/              # Rutas y guard de navegación
+│   └── types.ts             # Interfaces compartidas
+├── features/
+│   ├── auth/                # Login, store de autenticación
+│   └── payment-methods/     # CRUD de métodos de pago
+├── shared/
+│   ├── components/          # FilterPanel reutilizable
+│   ├── composables/         # useFormat (fechas, moneda)
+│   └── utils/               # Notificaciones globales
+├── App.vue
+└── main.ts
 ```
 
-### Customize the configuration
+## Supuestos y decisiones tecnicas
 
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-file).
+### Mock de datos
+
+- Toda la data falsa esta centralizada en `src/core/api/`.
+- No se requiere backend real. Los servicios simulan un delay de red (600ms).
+- Los datos se almacenan en memoria durante la sesión y se restauran al estado original al recargar la página.
+
+### Autenticación
+
+- Sesión persistente en localStorage (token y usuario).
+- Guard de navegación protege todas las rutas bajo MainLayout.
+- Credenciales fijas validadas contra mock.
+
+### Metodos de Pago
+
+- 8 registros de ejemplo precargados.
+- Tipos disponibles: Tarjeta de Crédito, Tarjeta de Débito, Transferencia Bancaria, Efectivo, Billetera Digital, Otro.
+- CRUD completo: crear, editar, eliminar (con Confirmación), activar/desactivar.
+
+### Componente de Filtros
+
+- Componente genérico y reutilizable ubicado en `shared/components/`.
+- Configurable mediante prop `fields` con tipo, etiqueta, opciones y validación.
+- No tiene conocimiento del negocio que lo implementa.
+
+### Notificaciones globales
+
+- Usa el plugin Notify de Quasar (librería incluida, no requiere instalación adicional).
+- Errores y confirmaciones se muestran como notificaciones emergentes.
+
+### Formateo de fechas
+
+- `shared/composables/useFormat.ts` exporta `formatDate` (formato YYYY-MM-DD HH:MM AM/PM) y `formatCurrency` (moneda COP).
+- Aplicado a la columna "Creado" de la tabla de métodos de pago.
+
+## Tipos de datos
+
+```typescript
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+interface PaymentMethod {
+  id: string;
+  name: string;
+  type: string;
+  description: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+```

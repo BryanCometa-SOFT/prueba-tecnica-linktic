@@ -10,10 +10,14 @@ const routes = [
     component: () => import('@/core/layouts/MainLayout.vue'),
     meta: { requiresAuth: true },
     children: [
-      { path: '', name: 'home', component: () => import('@/core/pages/HomePage.vue') },
+      {
+        path: '',
+        name: 'payment-methods',
+        component: () => import('@/features/payment-methods/views/PaymentMethodsPage.vue'),
+      },
     ],
   },
   { path: '/:catchAll(.*)*', component: () => import('@/core/pages/ErrorNotFound.vue') },
-]
+];
 
-export default routes
+export default routes;

@@ -3,7 +3,7 @@
     <q-card class="login-card" flat bordered>
       <q-card-section class="text-center q-pt-xl">
         <q-icon name="payments" size="48px" color="primary" />
-        <h4 class="text-weight-medium q-mt-md q-mb-sm">Gestion de Pagos</h4>
+        <h4 class="text-weight-medium q-mt-md q-mb-sm">Gestión de Pagos</h4>
         <p class="text-grey-7">Ingrese sus credenciales</p>
       </q-card-section>
 

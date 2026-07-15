@@ -1,10 +1,10 @@
-// Servicio mock de metodos de pago
+// Servicio mock de métodos de pago
 import type { PaymentMethod } from '@/core/types';
 
-// Catalogo de tipos de metodo de pago
+// Catalogo de tipos de método de pago
 export const PAYMENT_TYPES = [
-  { value: 'credit_card', label: 'Tarjeta de Credito' },
-  { value: 'debit_card', label: 'Tarjeta de Debito' },
+  { value: 'credit_card', label: 'Tarjeta de Crédito' },
+  { value: 'debit_card', label: 'Tarjeta de Débito' },
   { value: 'bank_transfer', label: 'Transferencia Bancaria' },
   { value: 'cash', label: 'Efectivo' },
   { value: 'digital_wallet', label: 'Billetera Digital' },
@@ -19,8 +19,8 @@ let data: PaymentMethod[] = [
     type: 'credit_card',
     description: 'Tarjeta corporativa',
     isActive: true,
-    createdAt: '2025-01-15',
-    updatedAt: '2025-06-20',
+    createdAt: '2025-01-15T08:30:00',
+    updatedAt: '2025-06-20T14:45:00',
   },
   {
     id: '2',
@@ -28,8 +28,8 @@ let data: PaymentMethod[] = [
     type: 'credit_card',
     description: 'Tarjeta ejecutiva',
     isActive: true,
-    createdAt: '2025-02-10',
-    updatedAt: '2025-05-15',
+    createdAt: '2025-02-10T10:15:00',
+    updatedAt: '2025-05-15T09:00:00',
   },
   {
     id: '3',
@@ -37,8 +37,8 @@ let data: PaymentMethod[] = [
     type: 'bank_transfer',
     description: null,
     isActive: false,
-    createdAt: '2025-03-05',
-    updatedAt: '2025-07-01',
+    createdAt: '2025-03-05T14:20:00',
+    updatedAt: '2025-07-01T11:30:00',
   },
   {
     id: '4',
@@ -46,8 +46,8 @@ let data: PaymentMethod[] = [
     type: 'cash',
     description: null,
     isActive: true,
-    createdAt: '2025-03-20',
-    updatedAt: '2025-03-20',
+    createdAt: '2025-03-20T07:45:00',
+    updatedAt: '2025-03-20T07:45:00',
   },
   {
     id: '5',
@@ -55,8 +55,8 @@ let data: PaymentMethod[] = [
     type: 'digital_wallet',
     description: 'Billetera digital',
     isActive: true,
-    createdAt: '2025-04-01',
-    updatedAt: '2025-06-28',
+    createdAt: '2025-04-01T16:00:00',
+    updatedAt: '2025-06-28T13:15:00',
   },
   {
     id: '6',
@@ -64,8 +64,8 @@ let data: PaymentMethod[] = [
     type: 'digital_wallet',
     description: null,
     isActive: false,
-    createdAt: '2025-04-15',
-    updatedAt: '2025-06-10',
+    createdAt: '2025-04-15T09:10:00',
+    updatedAt: '2025-06-10T15:30:00',
   },
   {
     id: '7',
@@ -73,8 +73,8 @@ let data: PaymentMethod[] = [
     type: 'credit_card',
     description: 'Viajes internacionales',
     isActive: true,
-    createdAt: '2025-05-01',
-    updatedAt: '2025-07-10',
+    createdAt: '2025-05-01T11:00:00',
+    updatedAt: '2025-07-10T08:45:00',
   },
   {
     id: '8',
@@ -82,8 +82,8 @@ let data: PaymentMethod[] = [
     type: 'bank_transfer',
     description: null,
     isActive: true,
-    createdAt: '2025-05-20',
-    updatedAt: '2025-05-20',
+    createdAt: '2025-05-20T10:30:00',
+    updatedAt: '2025-05-20T10:30:00',
   },
 ];
 
@@ -92,19 +92,19 @@ function delay(ms = 600) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-// Obtiene todos los metodos de pago
+// Obtiene todos los métodos de pago
 export async function getAll(): Promise<PaymentMethod[]> {
   await delay();
   return [...data];
 }
 
-// Obtiene un metodo de pago por id
+// Obtiene un método de pago por id
 export async function getById(id: string): Promise<PaymentMethod | null> {
   await delay();
   return data.find((p) => p.id === id) ?? null;
 }
 
-// Crea un nuevo metodo de pago
+// Crea un nuevo método de pago
 export async function create(item: {
   name: string;
   type: string;
@@ -125,7 +125,7 @@ export async function create(item: {
   return nuevo;
 }
 
-// Actualiza un metodo de pago existente
+// Actualiza un método de pago existente
 export async function update(
   id: string,
   cambios: Partial<PaymentMethod>,
@@ -144,13 +144,13 @@ export async function update(
   return data[i];
 }
 
-// Elimina un metodo de pago por id
+// Elimina un método de pago por id
 export async function remove(id: string): Promise<void> {
   await delay();
   data = data.filter((p) => p.id !== id);
 }
 
-// Activa o desactiva un metodo de pago
+// Activa o desactiva un método de pago
 export async function toggleStatus(id: string): Promise<PaymentMethod | null> {
   await delay();
   const i = data.findIndex((p) => p.id === id);

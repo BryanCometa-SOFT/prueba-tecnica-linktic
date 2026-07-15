@@ -6,9 +6,9 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Abrir menu" @click="toggleDrawer" />
 
-        <q-toolbar-title class="text-weight-medium"> Gestion de Pagos </q-toolbar-title>
+        <q-toolbar-title class="text-weight-medium"> Gestión de Pagos </q-toolbar-title>
 
-        <!-- Informacion del usuario autenticado -->
+        <!-- Información del usuario autenticado -->
         <q-chip
           v-if="authStore.user"
           dense
@@ -37,8 +37,8 @@
             <q-icon name="payments" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Metodos de Pago</q-item-label>
-            <q-item-label caption>Gestionar metodos de pago</q-item-label>
+            <q-item-label>Métodos de Pago</q-item-label>
+            <q-item-label caption>Gestionar métodos de pago</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
