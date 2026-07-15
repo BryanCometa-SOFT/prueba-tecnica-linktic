@@ -5,12 +5,12 @@ Aplicación frontend desarrollada con Vue 3, Quasar Framework 2 y Pinia.
 ## Requisitos
 
 - Node.js >= 22.12
-- pnpm (recomendado) o npm
+- npm
 
 ## Instalación
 
 ```bash
-pnpm install
+npm install
 ```
 
 ## Ejecutar tests
@@ -28,7 +28,7 @@ Los tests están escritos con **Jest 29 + ts-jest + @vue/vue3-jest** y se ubican
 ## Ejecutar en desarrollo
 
 ```bash
-quasar dev
+npm run dev
 ```
 
 La aplicación se abrirá en `http://localhost:9000`.
