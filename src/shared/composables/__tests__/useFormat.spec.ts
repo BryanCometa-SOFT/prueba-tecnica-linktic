@@ -1,5 +1,5 @@
-// Tests de formateo: fechas y moneda en null/undefined/válidos
-import { formatDate, formatCurrency } from '../useFormat';
+// Tests de formateo de fechas: válidas y nulas
+import { formatDate } from '../useFormat';
 
 describe('formatDate', () => {
   it('formatea una fecha ISO válida', () => {
@@ -12,8 +12,4 @@ describe('formatDate', () => {
   });
 });
 
-describe('formatCurrency', () => {
-  it('formatea un número con símbolo de moneda', () => {
-    expect(formatCurrency(1234567)).toContain('$');
-  });
-});
+

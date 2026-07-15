@@ -95,7 +95,7 @@ src/
 
 ### Formateo de fechas
 
-- `shared/composables/useFormat.ts` exporta `formatDate` (formato YYYY-MM-DD HH:MM AM/PM) y `formatCurrency` (moneda COP).
+- `shared/composables/useFormat.ts` exporta `formatDate` (formato YYYY-MM-DD HH:MM AM/PM).
 - Aplicado a la columna "Creado" de la tabla de métodos de pago.
 
 ## Tipos de datos
