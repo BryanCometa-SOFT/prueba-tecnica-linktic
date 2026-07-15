@@ -1,19 +1,19 @@
-import type { RouteRecordRaw } from 'vue-router';
-
-const routes: RouteRecordRaw[] = [
+const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/features/auth/views/LoginPage.vue'),
+    meta: { requiresAuth: false },
+  },
   {
     path: '/',
-    component: () => import('@/layouts/MainLayout.vue'),
+    component: () => import('@/core/layouts/MainLayout.vue'),
+    meta: { requiresAuth: true },
     children: [
-      // Las rutas se agregarán por feature
+      { path: '', name: 'home', component: () => import('@/core/pages/HomePage.vue') },
     ],
   },
+  { path: '/:catchAll(.*)*', component: () => import('@/core/pages/ErrorNotFound.vue') },
+]
 
-  // Ruta 404 - siempre debe ir al final
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('@/core/pages/ErrorNotFound.vue'),
-  },
-];
-
-export default routes;
+export default routes
