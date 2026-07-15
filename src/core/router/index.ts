@@ -21,18 +21,15 @@ export default defineRouter((/* { store, ssrContext } */) => {
     history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE),
   });
 
-  // Guard de navegacion para proteger rutas
-  // Redirige al login si no hay sesion activa
-  Router.beforeEach((to, from, next) => {
+  Router.beforeEach((to) => {
     const requiresAuth = to.matched.some((route) => route.meta.requiresAuth);
     const token = localStorage.getItem('token');
 
     if (requiresAuth && !token) {
-      next({ name: 'login' });
-    } else if (to.name === 'login' && token) {
-      next('/');
-    } else {
-      next();
+      return { name: 'login' };
+    }
+    if (to.name === 'login' && token) {
+      return '/';
     }
   });
 

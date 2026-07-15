@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import * as api from '@/core/api/payments';
-import { notifyError, notifySuccess } from '@/shared/utils/notify';
+import { notify } from '@/shared/utils/notify';
 import type { PaymentMethod } from '@/core/types';
 
 // Store de métodos de pago: CRUD completo con datos mock
@@ -19,7 +19,7 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
     } catch {
       const msg = 'Error al cargar métodos de pago';
       error.value = msg;
-      notifyError(msg);
+      notify(msg, 'negative');
     } finally {
       isLoading.value = false;
     }
@@ -32,11 +32,11 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
     try {
       const nuevo = await api.create(data);
       list.value = [nuevo, ...list.value];
-      notifySuccess('Método de pago creado');
+      notify('Método de pago creado', 'positive');
     } catch {
       const msg = 'Error al crear método de pago';
       error.value = msg;
-      notifyError(msg);
+      notify(msg, 'negative');
     } finally {
       isLoading.value = false;
     }
@@ -52,11 +52,11 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
         const i = list.value.findIndex((p) => p.id === id);
         if (i !== -1) list.value[i] = actualizado;
       }
-      notifySuccess('Método de pago actualizado');
+      notify('Método de pago actualizado', 'positive');
     } catch {
       const msg = 'Error al actualizar método de pago';
       error.value = msg;
-      notifyError(msg);
+      notify(msg, 'negative');
     } finally {
       isLoading.value = false;
     }
@@ -69,33 +69,32 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
     try {
       await api.remove(id);
       list.value = list.value.filter((p) => p.id !== id);
-      notifySuccess('Método de pago eliminado');
+      notify('Método de pago eliminado', 'positive');
     } catch {
       const msg = 'Error al eliminar método de pago';
       error.value = msg;
-      notifyError(msg);
+      notify(msg, 'negative');
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Activa o desactiva un método de pago (optimistic update)
   async function toggleStatus(id: string) {
     const i = list.value.findIndex((p) => p.id === id);
     if (i === -1) return;
     const previous = list.value[i]!;
     const nuevoEstado = !previous.isActive;
-    // Actualiza la UI de inmediato
+    isLoading.value = true;
+    error.value = null;
     list.value[i] = { ...previous, isActive: nuevoEstado };
     try {
       await api.toggleStatus(id);
-      notifySuccess(
-        `Método de pago ${nuevoEstado ? 'activado' : 'desactivado'}`,
-      );
+      notify(`Método de pago ${nuevoEstado ? 'activado' : 'desactivado'}`, 'positive');
     } catch {
-      // Reversión si falla
       list.value[i] = previous;
-      notifyError('Error al cambiar estado');
+      notify('Error al cambiar estado', 'negative');
+    } finally {
+      isLoading.value = false;
     }
   }
 

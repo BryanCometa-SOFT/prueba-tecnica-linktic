@@ -1,10 +1,12 @@
-// Helper de notificaciones globales usando Quasar Notify
 import { Notify } from 'quasar';
 
-export function notifyError(message: string): void {
-  Notify.create({ type: 'negative', message, position: 'top-right', timeout: 4000 });
-}
+type NotifyType = 'positive' | 'negative' | 'warning' | 'info' | 'ongoing';
 
-export function notifySuccess(message: string): void {
-  Notify.create({ type: 'positive', message, position: 'top-right', timeout: 3000 });
+export function notify(message: string, type: NotifyType = 'info'): void {
+  Notify.create({
+    type,
+    message,
+    position: 'top-right',
+    timeout: type === 'negative' ? 4000 : 3000,
+  });
 }

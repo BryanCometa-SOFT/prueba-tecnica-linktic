@@ -1,8 +1,8 @@
 {
-  "name": "prueba-tecnica",
+  "name": "prueba-tecnica-linktic",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "description": "Proyecto de autenticación y autorización de usuarios con Quasar, Vue 3, Pinia y Vite",
+  "productName": "Prueba Técnica Linktic",
   "author": "BryanCometa-SOFT <bryanteveperdomo2@gmail.com>",
   "type": "module",
   "private": true,

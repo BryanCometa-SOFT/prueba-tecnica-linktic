@@ -30,7 +30,7 @@
           emit-value
           map-options
           class="filter-field"
-          :rules="field.required ? [(v: any) => !!v || `${field.label} es requerido`] : []"
+          :rules="field.required ? [(v: string | null) => !!v || `${field.label} es requerido`] : []"
           :disable="loading"
         />
 
@@ -100,7 +100,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 
-// Tipo que define un campo de filtro
 export interface FilterField {
   key: string;
   label: string;
@@ -109,32 +108,30 @@ export interface FilterField {
   options?: { label: string; value: string | boolean | number }[];
 }
 
+export type FilterValues = Record<string, string | boolean | null>;
+
 const props = defineProps<{
   fields: FilterField[];
   loading?: boolean;
 }>();
 
 const emit = defineEmits<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  search: [values: Record<string, any>];
+  search: [values: FilterValues];
   clear: [];
 }>();
 
 const validationError = ref<string | null>(null);
 
-// Opciones para campos booleanos
 const booleanOptions = [
   { label: 'Activo', value: true },
   { label: 'Inactivo', value: false },
 ];
 
-// Estado interno de cada campo, inicializado vacio
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const values = reactive<Record<string, any>>(
+const values: Record<string, any> = reactive(
   Object.fromEntries(props.fields.map((f) => [f.key, null])),
 );
 
-// Valida campos requeridos y emite busqueda
 function emitSearch(): void {
   validationError.value = null;
 
@@ -145,13 +142,11 @@ function emitSearch(): void {
     }
   }
 
-  // Filtra solo campos con valor (no null, no undefined, no '')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const filled: Record<string, any> = {};
+  const filled: FilterValues = {};
   for (const field of props.fields) {
     const val = values[field.key];
     if (val !== null && val !== undefined && val !== '') {
-      filled[field.key] = val;
+      filled[field.key] = val as string | boolean | null;
     }
   }
 

@@ -96,7 +96,7 @@
               dense
               emit-value
               map-options
-              :rules="[(v: any) => !!v || 'El tipo es requerido']"
+              :rules="[(v: string | null) => !!v || 'El tipo es requerido']"
             />
             <q-input v-model="form.description" label="Descripción (opcional)" outlined dense />
           </q-form>
@@ -144,7 +144,7 @@ import { usePaymentMethodsStore } from '../store/paymentMethodsStore';
 import { PAYMENT_TYPES } from '@/core/api/payments';
 import FilterPanel from '@/shared/components/FilterPanel.vue';
 import type { PaymentMethod } from '@/core/types';
-import type { FilterField } from '@/shared/components/FilterPanel.vue';
+import type { FilterField, FilterValues } from '@/shared/components/FilterPanel.vue';
 
 const store = usePaymentMethodsStore();
 
@@ -201,12 +201,11 @@ const filterFields: FilterField[] = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function handleSearch(values: Record<string, any>) {
+function handleSearch(values: FilterValues) {
   filterCriteria.value = {
-    name: values.name ?? '',
-    type: values.type ?? null,
-    isActive: values.isActive !== undefined ? values.isActive : null,
+    name: (values.name as string) ?? '',
+    type: (values.type as string | null) ?? null,
+    isActive: values.isActive !== undefined ? (values.isActive as boolean | null) : null,
   };
 }
 
