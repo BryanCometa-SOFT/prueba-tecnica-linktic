@@ -127,6 +127,7 @@ const booleanOptions = [
   { label: 'Inactivo', value: false },
 ];
 
+// Quasar v-model no acepta boolean, usamos any como contenedor dinámico
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const values: Record<string, any> = reactive(
   Object.fromEntries(props.fields.map((f) => [f.key, null])),

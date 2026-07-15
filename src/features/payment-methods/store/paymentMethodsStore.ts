@@ -11,7 +11,7 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
   const error = ref<string | null>(null);
 
   // Carga la lista completa desde el mock
-  async function fetchAll() {
+  async function fetchAll(): Promise<void> {
     isLoading.value = true;
     error.value = null;
     try {
@@ -26,7 +26,7 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
   }
 
   // Crea un nuevo método de pago
-  async function create(data: { name: string; type: string; description?: string }) {
+  async function create(data: { name: string; type: string; description?: string }): Promise<void> {
     isLoading.value = true;
     error.value = null;
     try {
@@ -43,7 +43,7 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
   }
 
   // Actualiza un método de pago existente
-  async function update(id: string, changes: Partial<PaymentMethod>) {
+  async function update(id: string, changes: Partial<PaymentMethod>): Promise<void> {
     isLoading.value = true;
     error.value = null;
     try {
@@ -63,7 +63,7 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
   }
 
   // Elimina un método de pago
-  async function remove(id: string) {
+  async function remove(id: string): Promise<void> {
     isLoading.value = true;
     error.value = null;
     try {
@@ -80,7 +80,7 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
   }
 
   // Activa/desactiva un método de pago con actualización optimista
-  async function toggleStatus(id: string) {
+  async function toggleStatus(id: string): Promise<void> {
     const i = list.value.findIndex((p) => p.id === id);
     if (i === -1) return;
     const previous = list.value[i]!;

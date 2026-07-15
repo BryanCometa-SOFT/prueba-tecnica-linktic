@@ -18,15 +18,7 @@
     />
 
     <!-- Tabla de métodos de pago -->
-    <q-table
-      :rows="filteredRows"
-      :columns="columns"
-      row-key="id"
-      :loading="store.isLoading"
-      flat
-      bordered
-    >
-      <!-- Columna estado con switch -->
+    <q-table :rows="filteredRows" :columns="columns" row-key="id" :loading="store.isLoading" flat bordered>
       <template v-slot:body-cell-isActive="props">
         <q-td :props="props">
           <q-toggle
@@ -38,146 +30,75 @@
         </q-td>
       </template>
 
-      <!-- Columna tipo con etiqueta legible -->
       <template v-slot:body-cell-type="props">
         <q-td :props="props">
           {{ getTypeLabel(props.row.type) }}
         </q-td>
       </template>
 
-      <!-- Columna fecha formateada -->
       <template v-slot:body-cell-createdAt="props">
         <q-td :props="props">
           {{ formatDate(props.row.createdAt) }}
         </q-td>
       </template>
 
-      <!-- Columna acciones -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
           <q-btn flat round icon="edit" color="primary" size="sm" @click="openEdit(props.row)">
             <q-tooltip>Editar</q-tooltip>
           </q-btn>
-          <q-btn
-            flat
-            round
-            icon="delete"
-            color="negative"
-            size="sm"
-            @click="confirmDelete(props.row)"
-          >
+          <q-btn flat round icon="delete" color="negative" size="sm" @click="confirmDelete(props.row)">
             <q-tooltip>Eliminar</q-tooltip>
           </q-btn>
         </q-td>
       </template>
     </q-table>
 
-    <!-- Dialog para crear/editar -->
-    <q-dialog v-model="showDialog" persistent>
-      <q-card style="min-width: 450px">
-        <q-card-section>
-          <div class="text-h6">{{ isEditing ? 'Editar' : 'Nuevo' }} Método de Pago</div>
-        </q-card-section>
+    <!-- Dialog crear/editar -->
+    <PaymentMethodDialog
+      v-model:show="showDialog"
+      :is-editing="isEditing"
+      :item="editingItem"
+      :loading="store.isLoading"
+      @save="handleSave"
+    />
 
-        <q-card-section>
-          <q-form @submit="save" class="q-gutter-md">
-            <q-input
-              v-model="form.name"
-              label="Nombre"
-              outlined
-              dense
-              :rules="[(v: string) => !!v || 'El nombre es requerido']"
-            />
-            <q-select
-              v-model="form.type"
-              label="Tipo"
-              :options="typeOptions"
-              outlined
-              dense
-              emit-value
-              map-options
-              :rules="[(v: string | null) => !!v || 'El tipo es requerido']"
-            />
-            <q-input v-model="form.description" label="Descripción (opcional)" outlined dense />
-          </q-form>
-        </q-card-section>
-
-        <q-card-actions align="right" class="q-pa-md">
-          <q-btn flat label="Cancelar" v-close-popup no-caps />
-          <q-btn color="primary" label="Guardar" :loading="store.isLoading" @click="save" no-caps />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <!-- Dialog de confirmación para eliminar -->
-    <q-dialog v-model="showDeleteConfirm" persistent>
-      <q-card>
-        <q-card-section class="row items-center q-gutter-sm">
-          <q-icon name="warning" color="negative" size="40px" />
-          <div>
-            <div class="text-h6">Eliminar método de pago</div>
-            <div class="text-grey-7">
-              Confirma que desea eliminar <strong>{{ deletingItem?.name }}</strong
-              >?
-            </div>
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" v-close-popup no-caps />
-          <q-btn
-            color="negative"
-            label="Eliminar"
-            :loading="store.isLoading"
-            @click="deleteItem"
-            no-caps
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <!-- Dialog confirmación eliminar -->
+    <ConfirmDeleteDialog
+      v-model:show="showDeleteConfirm"
+      :item="deletingItem"
+      :loading="store.isLoading"
+      @confirm="handleDelete"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { formatDate } from '@/shared/composables/useFormat';
 import { usePaymentMethodsStore } from '../store/paymentMethodsStore';
 import { PAYMENT_TYPES } from '@/core/api/payments';
 import FilterPanel from '@/shared/components/FilterPanel.vue';
+import PaymentMethodDialog from '../components/PaymentMethodDialog.vue';
+import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog.vue';
 import type { PaymentMethod } from '@/core/types';
 import type { FilterField, FilterValues } from '@/shared/components/FilterPanel.vue';
 
 const store = usePaymentMethodsStore();
 
-// Columnas de la tabla
 const columns = [
   { name: 'name', label: 'Nombre', align: 'left' as const, field: 'name', sortable: true },
   { name: 'type', label: 'Tipo', align: 'left' as const, field: 'type', sortable: true },
-  {
-    name: 'isActive',
-    label: 'Estado',
-    align: 'center' as const,
-    field: 'isActive',
-    sortable: true,
-  },
-  {
-    name: 'createdAt',
-    label: 'Creado',
-    align: 'left' as const,
-    field: 'createdAt',
-    sortable: true,
-  },
+  { name: 'isActive', label: 'Estado', align: 'center' as const, field: 'isActive', sortable: true },
+  { name: 'createdAt', label: 'Creado', align: 'left' as const, field: 'createdAt', sortable: true },
   { name: 'actions', label: 'Acciones', align: 'center' as const, field: 'actions' },
 ];
 
-// Opciones para el select de tipos
-const typeOptions = PAYMENT_TYPES.map((t) => ({ label: t.label, value: t.value }));
-
-// Convierte el valor del tipo a su etiqueta
 function getTypeLabel(type: string): string {
   return PAYMENT_TYPES.find((t) => t.value === type)?.label ?? type;
 }
 
-// --- Filtros ---
+// Filtros
 interface FilterCriteria {
   name: string;
   type: string | null;
@@ -188,20 +109,11 @@ const filterCriteria = ref<FilterCriteria>({ name: '', type: null, isActive: nul
 
 const filterFields: FilterField[] = [
   { key: 'name', label: 'Nombre', type: 'text' },
-  {
-    key: 'type',
-    label: 'Tipo',
-    type: 'select',
-    options: typeOptions,
-  },
-  {
-    key: 'isActive',
-    label: 'Estado',
-    type: 'boolean',
-  },
+  { key: 'type', label: 'Tipo', type: 'select', options: PAYMENT_TYPES.map((t) => ({ label: t.label, value: t.value })) },
+  { key: 'isActive', label: 'Estado', type: 'boolean' },
 ];
 
-function handleSearch(values: FilterValues) {
+function handleSearch(values: FilterValues): void {
   filterCriteria.value = {
     name: (values.name as string) ?? '',
     type: (values.type as string | null) ?? null,
@@ -209,63 +121,46 @@ function handleSearch(values: FilterValues) {
   };
 }
 
-function handleClear() {
+function handleClear(): void {
   filterCriteria.value = { name: '', type: null, isActive: null };
 }
 
-// --- CRUD ---
+// CRUD
 const showDialog = ref(false);
 const isEditing = ref(false);
-const editingId = ref<string | null>(null);
+const editingItem = ref<PaymentMethod | null>(null);
 
-const form = reactive({ name: '', type: '', description: '' });
-
-function openCreate() {
+function openCreate(): void {
   isEditing.value = false;
-  editingId.value = null;
-  form.name = '';
-  form.type = '';
-  form.description = '';
+  editingItem.value = null;
   showDialog.value = true;
 }
 
-function openEdit(item: PaymentMethod) {
+function openEdit(item: PaymentMethod): void {
   isEditing.value = true;
-  editingId.value = item.id;
-  form.name = item.name;
-  form.type = item.type;
-  form.description = item.description ?? '';
+  editingItem.value = item;
   showDialog.value = true;
 }
 
-async function save() {
-  if (isEditing.value && editingId.value) {
-    await store.update(editingId.value, {
-      name: form.name,
-      type: form.type,
-      description: form.description || null,
-    });
+async function handleSave(data: { name: string; type: string; description?: string }): Promise<void> {
+  if (isEditing.value && editingItem.value) {
+    await store.update(editingItem.value.id, data);
   } else {
-    const payload: { name: string; type: string; description?: string } = {
-      name: form.name,
-      type: form.type,
-    };
-    if (form.description) payload.description = form.description;
-    await store.create(payload);
+    await store.create(data);
   }
   showDialog.value = false;
 }
 
-// --- Eliminar ---
+// Eliminar
 const showDeleteConfirm = ref(false);
 const deletingItem = ref<PaymentMethod | null>(null);
 
-function confirmDelete(item: PaymentMethod) {
+function confirmDelete(item: PaymentMethod): void {
   deletingItem.value = item;
   showDeleteConfirm.value = true;
 }
 
-async function deleteItem() {
+async function handleDelete(): Promise<void> {
   if (deletingItem.value) {
     await store.remove(deletingItem.value.id);
     showDeleteConfirm.value = false;
@@ -273,26 +168,20 @@ async function deleteItem() {
   }
 }
 
-// Filas filtradas con AND entre criterios
+// Filas filtradas
 const filteredRows = computed(() => {
-  let result = store.list
-  const c = filterCriteria.value
+  let result = store.list;
+  const c = filterCriteria.value;
 
   if (c.name) {
-    const q = c.name.toLowerCase()
-    result = result.filter((p) => p.name.toLowerCase().includes(q))
+    const q = c.name.toLowerCase();
+    result = result.filter((p) => p.name.toLowerCase().includes(q));
   }
+  if (c.type) result = result.filter((p) => p.type === c.type);
+  if (c.isActive !== null) result = result.filter((p) => p.isActive === c.isActive);
 
-  if (c.type) {
-    result = result.filter((p) => p.type === c.type)
-  }
-
-  if (c.isActive !== null) {
-    result = result.filter((p) => p.isActive === c.isActive)
-  }
-
-  return result
-})
+  return result;
+});
 
 onMounted(() => {
   void store.fetchAll();

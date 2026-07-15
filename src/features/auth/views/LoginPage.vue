@@ -73,7 +73,7 @@ onMounted(() => {
 });
 
 // Login: si el store no reporta error, redirige
-async function handleLogin() {
+async function handleLogin(): Promise<void> {
   await authStore.login(form);
   if (authStore.isAuthenticated) {
     void router.push('/');

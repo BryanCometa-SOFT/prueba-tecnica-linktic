@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!token.value);
 
   // Restaura sesion desde localStorage al iniciar la app
-  function restoreSession() {
+  function restoreSession(): void {
     const s = getStoredSession();
     if (s) {
       user.value = s.user;
@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Envia credenciales al servicio mock
-  async function login(creds: { email: string; password: string }) {
+  async function login(creds: { email: string; password: string }): Promise<void> {
     isLoading.value = true;
     error.value = null;
     try {
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Cierra sesion y limpia estado
-  async function logout() {
+  async function logout(): Promise<void> {
     await apiLogout();
     user.value = null;
     token.value = null;

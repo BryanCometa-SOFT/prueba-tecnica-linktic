@@ -90,7 +90,7 @@ const initialData: PaymentMethod[] = [
 let data: PaymentMethod[] = JSON.parse(JSON.stringify(initialData));
 
 // Simula delay de red
-function delay(ms = 600) {
+function delay(ms = 600): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
@@ -130,7 +130,7 @@ export async function create(item: {
 // Actualiza un método de pago existente
 export async function update(
   id: string,
-  cambios: Partial<PaymentMethod>,
+  changes: Partial<PaymentMethod>,
 ): Promise<PaymentMethod | null> {
   await delay();
   const i = data.findIndex((p) => p.id === id);
@@ -138,7 +138,7 @@ export async function update(
   const old = data[i]!;
   data[i] = {
     ...old,
-    ...cambios,
+    ...changes,
     id: old.id,
     createdAt: old.createdAt,
     updatedAt: new Date().toISOString(),
