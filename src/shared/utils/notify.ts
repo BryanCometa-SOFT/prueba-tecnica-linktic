@@ -2,6 +2,7 @@ import { Notify } from 'quasar';
 
 type NotifyType = 'positive' | 'negative' | 'warning' | 'info' | 'ongoing';
 
+// Muestra una notificación emergente usando el plugin de Quasar
 export function notify(message: string, type: NotifyType = 'info'): void {
   Notify.create({
     type,

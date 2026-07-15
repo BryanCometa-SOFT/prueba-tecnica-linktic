@@ -30,8 +30,8 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const nuevo = await api.create(data);
-      list.value = [nuevo, ...list.value];
+      const created = await api.create(data);
+      list.value = [created, ...list.value];
       notify('Método de pago creado', 'positive');
     } catch {
       const msg = 'Error al crear método de pago';
@@ -43,14 +43,14 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
   }
 
   // Actualiza un método de pago existente
-  async function update(id: string, cambios: Partial<PaymentMethod>) {
+  async function update(id: string, changes: Partial<PaymentMethod>) {
     isLoading.value = true;
     error.value = null;
     try {
-      const actualizado = await api.update(id, cambios);
-      if (actualizado) {
+      const updated = await api.update(id, changes);
+      if (updated) {
         const i = list.value.findIndex((p) => p.id === id);
-        if (i !== -1) list.value[i] = actualizado;
+        if (i !== -1) list.value[i] = updated;
       }
       notify('Método de pago actualizado', 'positive');
     } catch {
@@ -79,17 +79,18 @@ export const usePaymentMethodsStore = defineStore('paymentMethods', () => {
     }
   }
 
+  // Activa/desactiva un método de pago con actualización optimista
   async function toggleStatus(id: string) {
     const i = list.value.findIndex((p) => p.id === id);
     if (i === -1) return;
     const previous = list.value[i]!;
-    const nuevoEstado = !previous.isActive;
+    const newStatus = !previous.isActive;
     isLoading.value = true;
     error.value = null;
-    list.value[i] = { ...previous, isActive: nuevoEstado };
+    list.value[i] = { ...previous, isActive: newStatus };
     try {
       await api.toggleStatus(id);
-      notify(`Método de pago ${nuevoEstado ? 'activado' : 'desactivado'}`, 'positive');
+      notify(`Método de pago ${newStatus ? 'activado' : 'desactivado'}`, 'positive');
     } catch {
       list.value[i] = previous;
       notify('Error al cambiar estado', 'negative');

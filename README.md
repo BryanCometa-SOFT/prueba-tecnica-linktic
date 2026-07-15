@@ -13,6 +13,18 @@ Aplicación frontend desarrollada con Vue 3, Quasar Framework 2 y Pinia.
 pnpm install
 ```
 
+## Ejecutar tests
+
+```bash
+# Una sola ejecución
+npm test
+
+# Modo watch
+npm run test:watch
+```
+
+Los tests están escritos con **Jest 29 + ts-jest + @vue/vue3-jest** y se ubican en carpetas `__tests__` junto al código que prueban.
+
 ## Ejecutar en desarrollo
 
 ```bash

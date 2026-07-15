@@ -1,3 +1,4 @@
+// Formatea una fecha ISO a YYYY-MM-DD HH:MM AM/PM, o "-" si es null/undefined
 export function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return '-'
 
@@ -17,6 +18,7 @@ export function formatDate(dateStr: string | null | undefined): string {
   return `${year}-${month}-${day} ${hours}:${minutes} ${ampm}`
 }
 
+// Formatea un número a moneda COP con símbolo $
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',

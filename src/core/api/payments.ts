@@ -12,7 +12,7 @@ export const PAYMENT_TYPES = [
 ];
 
 // Datos de ejemplo
-let data: PaymentMethod[] = [
+const initialData: PaymentMethod[] = [
   {
     id: '1',
     name: 'Visa Corporativa',
@@ -87,15 +87,17 @@ let data: PaymentMethod[] = [
   },
 ];
 
+let data: PaymentMethod[] = JSON.parse(JSON.stringify(initialData));
+
 // Simula delay de red
 function delay(ms = 600) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-// Obtiene todos los métodos de pago
+// Obtiene todos los métodos de pago (deep clone para evitar mutaciones externas)
 export async function getAll(): Promise<PaymentMethod[]> {
   await delay();
-  return [...data];
+  return JSON.parse(JSON.stringify(data)) as PaymentMethod[];
 }
 
 // Obtiene un método de pago por id
@@ -112,7 +114,7 @@ export async function create(item: {
 }): Promise<PaymentMethod> {
   await delay();
   const now = new Date().toISOString();
-  const nuevo: PaymentMethod = {
+  const newItem: PaymentMethod = {
     id: String(Date.now()),
     name: item.name,
     type: item.type,
@@ -121,8 +123,8 @@ export async function create(item: {
     createdAt: now,
     updatedAt: now,
   };
-  data = [nuevo, ...data];
-  return nuevo;
+  data = [newItem, ...data];
+  return newItem;
 }
 
 // Actualiza un método de pago existente
@@ -148,6 +150,11 @@ export async function update(
 export async function remove(id: string): Promise<void> {
   await delay();
   data = data.filter((p) => p.id !== id);
+}
+
+// Solo para testing: restaura los datos al estado inicial
+export function __resetData(): void {
+  data = JSON.parse(JSON.stringify(initialData)) as PaymentMethod[];
 }
 
 // Activa o desactiva un método de pago
