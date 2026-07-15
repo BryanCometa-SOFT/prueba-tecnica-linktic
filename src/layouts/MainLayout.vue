@@ -1,23 +1,41 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <!-- Layout principal de la aplicacion -->
+  <q-layout view="hHh lpR fFf">
+    <!-- Barra superior -->
+    <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn flat dense round icon="menu" aria-label="Abrir menu" @click="toggleDrawer" />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title class="text-weight-medium">
+          Gestion de Pagos
+        </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-space />
+
+        <q-btn flat round icon="logout" label="Salir" @click="handleLogout" no-caps />
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+    <!-- Drawer de navegacion lateral -->
+    <q-drawer v-model="drawerOpen" show-if-above bordered :width="240">
+      <q-list padding>
+        <q-item-label header class="text-grey-8 text-weight-bold">
+          Menu Principal
+        </q-item-label>
 
-        <EssentialLink v-for="link in linksList" :key="link.label" v-bind="link" />
+        <q-item clickable v-ripple to="/">
+          <q-item-section avatar>
+            <q-icon name="payments" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Metodos de Pago</q-item-label>
+            <q-item-label caption>Gestionar metodos de pago</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
+    <!-- Contenido principal -->
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -26,56 +44,21 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import EssentialLink, { type EssentialLinkProps } from '@/components/EssentialLink.vue';
+import { useRouter } from 'vue-router';
 
-const linksList: EssentialLinkProps[] = [
-  {
-    label: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    label: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    label: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    label: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    label: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    label: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    label: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
+// Estado del drawer lateral
+const drawerOpen = ref(false);
 
-const leftDrawerOpen = ref(false);
+const router = useRouter();
 
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
+// Alterna la visibilidad del drawer
+function toggleDrawer(): void {
+  drawerOpen.value = !drawerOpen.value;
+}
+
+// Cierra la sesion y redirige al login
+function handleLogout(): void {
+  // TODO: Implementar cierre de sesion en Fase 2
+  void router.push('/login');
 }
 </script>
