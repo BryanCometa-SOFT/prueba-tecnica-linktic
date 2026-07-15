@@ -6,9 +6,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Abrir menu" @click="toggleDrawer" />
 
-        <q-toolbar-title class="text-weight-medium">
-          Gestion de Pagos
-        </q-toolbar-title>
+        <q-toolbar-title class="text-weight-medium"> Gestion de Pagos </q-toolbar-title>
 
         <q-space />
 
@@ -19,9 +17,7 @@
     <!-- Drawer de navegacion lateral -->
     <q-drawer v-model="drawerOpen" show-if-above bordered :width="240">
       <q-list padding>
-        <q-item-label header class="text-grey-8 text-weight-bold">
-          Menu Principal
-        </q-item-label>
+        <q-item-label header class="text-grey-8 text-weight-bold"> Menu Principal </q-item-label>
 
         <q-item clickable v-ripple to="/">
           <q-item-section avatar>
